@@ -122,12 +122,15 @@
   };
 
   const completeProgress = (videoId) => {
-    const progressBar = document
-      .getElementById("tel-downloader-progress-" + videoId)
-      .querySelector("div.progress");
+    const innerContainer = document.getElementById(
+      "tel-downloader-progress-" + videoId
+    );
+    const progressBar = innerContainer.querySelector("div.progress");
     progressBar.querySelector("p").innerText = "Completed";
     progressBar.querySelector("div").style.backgroundColor = "#B6C649";
     progressBar.querySelector("div").style.width = "100%";
+
+    innerContainer.remove()
   };
 
   const AbortProgress = (videoId) => {
@@ -149,7 +152,16 @@
       (Math.random() + 1).toString(36).substring(2, 10) +
       "_" +
       Date.now().toString();
-    let fileName = hashCode(url).toString(36) + "." + _file_extension;
+    
+    let desc =''
+    const hasDesc = document.querySelectorAll('.MediaViewerSlide--active .media-text')[0]
+    if(hasDesc){
+        desc = hasDesc.innerText.split('\n')[0]
+    }else{
+        desc = hashCode(url).toString(36)
+    }
+
+    let fileName = desc + "." + _file_extension;
 
     // Some video src is in format:
     // 'stream/{"dcId":5,"location":{...},"size":...,"mimeType":"video/mp4","fileName":"xxxx.MP4"}'
@@ -824,8 +836,10 @@
     const container = document.createElement("div");
     container.id = "tel-downloader-progress-bar-container";
     container.style.position = "fixed";
-    container.style.bottom = 0;
+    container.style.top = "3.5rem";
     container.style.right = 0;
+    container.style.maxHeight = "calc(100% - 3.5rem)";
+     container.style.overflow = "auto";
     if (location.pathname.startsWith("/k/")) {
       container.style.zIndex = 4;
     } else {
